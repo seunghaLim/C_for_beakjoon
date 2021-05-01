@@ -27,7 +27,7 @@ typedef struct
 	return	head node pointer
 			NULL if overflow
 */
-TREE *createTree(void); // 빈 트리 만드는 함수. 트리구조체(두번째 구조체) 만들어서 반환
+TREE *createTree(void) // 빈 트리 만드는 함수. 트리구조체(두번째 구조체) 만들어서 반환
 {
 	TREE* tree;
 	tree = malloc(sizeof(TREE));
@@ -40,7 +40,7 @@ TREE *createTree(void); // 빈 트리 만드는 함수. 트리구조체(두번�
 
 void destroyTree( TREE *pTree); 
 
-static void _destroy( NODE *root); // 실제 딜리트하는 얘 순회하면서 노드 전부 해제 
+static void _destroy( NODE *root) // 실제 딜리트하는 얘 순회하면서 노드 전부 해제 
 {
 	if (root)
 	{
@@ -63,7 +63,7 @@ static void _destroy( NODE *root); // 실제 딜리트하는 얘 순회하면서
 	return	node pointer
 			NULL if overflow
 */
-static NODE *_makeNode( char ch);    // 연산자 및 피연산자의 데이터가 들어가는 노드 하나 만들어줌
+static NODE *_makeNode( char ch)    // 연산자 및 피연산자의 데이터가 들어가는 노드 하나 만들어줌
 {									 // 연산자든 피연산자든 입력받아서 메모리 할당해서 노드 만들어주고 왼오 링크 널로 해주고 포인터 주소 반환 
 	NODE* node;
 	node = malloc(sizeof(NODE));
@@ -87,11 +87,11 @@ static NODE *_makeNode( char ch);    // 연산자 및 피연산자의 데이터�
 	return	1 success
 			0 invalid postfix expression
 */
-int postfix2tree( char *expr, TREE *pTree);  // _makeNode 얘 호출
+int postfix2tree( char *expr, TREE *pTree)  // _makeNode 얘 호출
 {											// 사용자가 입력한 후위표기식을 expr로 받아서 expression tree 만든 다음에 pTree가 헤드 구조를 가리키게 함
 	// 1 2 + 3 4 * - 들어왔다고 가정
 	int num = strlen(expr); //  num = 7 
-	NODE* nodeArr = malloc(sizeof(NODE) * num); // 길이가 7인 nodeArr 배열 만들기
+	NODE* nodeArr = malloc(sizeof(NODE) * MAX_STACK_SIZE); // 길이가 7인 nodeArr 배열 만들기
 	int top = -1;
 	
 	for (int i = 0; i < num; i++)
@@ -102,43 +102,46 @@ int postfix2tree( char *expr, TREE *pTree);  // _makeNode 얘 호출
 			newN = _makeNode(expr[i]);
 			
 			top++;
-			nodeArr[top] = newN; // nodeArr[top]->right = newN 이렇게 안해도 되는지 고민
+			nodeArr[top].right = newN; // nodeArr[top]->right = newN 이렇게 안해도 되는지 고민
 		}
 		else 
 		{
-			if (top < 0)
-			{
-				return 0;
-			}
-			
 			NODE* newN;
 			newN = _makeNode(expr[i]);
 			
-			newN->right = nodeArr[top];
+			newN->right = nodeArr[top].right;
 			top--;
-			newN->left = nodeArr[top];
-			top--:
+			newN->left = nodeArr[top].right;
+			top--;
 			
+			if (top < -1)
+			{
+				free(nodeArr);
+				return 0;
+			}
+
 			top++;
-			nodeArr[top] = newN;
+			nodeArr[top].right = newN;
+			
 		}
 	}
 	
 	if (top == 0)
 	{
-		pTree->root = nodeArr[0];
+		pTree->root = nodeArr[0].right;
+		free(nodeArr);
 		return 1;
 	}
 	else if (top > 0)
 	{
 		for (int i = top; i >= 0; i--)
 		{
-			free(nodeArr[i]);
+			free(nodeArr[i].right); 
 		}
+		free(nodeArr);
 		return 0;
 	}
 	
-	free(nodeArr);
 }	
 
 
@@ -147,7 +150,7 @@ void traverseTree( TREE *pTree);
 /* internal traversal function			
 	an implementation of ALGORITHM 6-6
 */
-static void _traverse(NODE *root);		// infix 수식으로 바꿔줄 때 필요함 중위 순회를 해 가면서 중위표기식으로 바꿔줌
+static void _traverse(NODE *root)		// infix 수식으로 바꿔줄 때 필요함 중위 순회를 해 가면서 중위표기식으로 바꿔줌
 {
 	if (root)
 	{
@@ -172,42 +175,41 @@ void printTree( TREE *pTree);
 
 /* internal traversal function
 */
-static void _infix_print( NODE *root, int level);  // 중위순회지만 오- 자기자신 - 왼으로 순회하면서 프린트 하도록 함 level = 0인 상태
+static void _infix_print( NODE *root, int level)  // 중위순회지만 오- 자기자신 - 왼으로 순회하면서 프린트 하도록 함 level = 0인 상태
 {												   // level이 커질수록 tap키가 많이 필요하기 때문에 
-												  //- level이 0인 루트는 tap 출력 안함 level이 1인 애들이 tap 하나 출력하고 출력 이렇게 
+    													  //- level이 0인 루트는 tap 출력 안함 level이 1인 애들이 tap 하나 출력하고 출력 이렇게 
 												// tap키 프린트 어케함????? 
 	if (root)
 	{
+		level += 4;
+
 		if (root->right)
-		{	
-			++level;
+		{
 			_infix_print(root->right, level);
 		}
 		
-		printf("%c", root->data);
-		
-		while
-		{
-			printf("\t");
-		}
+		printf("\n");
+		for (int i = 4; i < level; i++)
+			printf(" ");
+		printf("%c\n", root->data);
 		
 		if (root->left)
 		{	
-			_infix_print(root->right, level);
+			_infix_print(root->left, level);
 		}
 	}											 
 }												  
 												  
-												  
+								  
 												  
 												  
 /* evaluate postfix expression
 	return	value of expression
 */
-float evalPostfix(char *expr);  // 후위표기식을 받아서 내부에서 계산해서 리턴
+float evalPostfix(char *expr)  // 후위표기식을 받아서 내부에서 계산해서 리턴
 {
 	int num = strlen(expr); //  num = 7 
-	char arr[num]; // 길이가 7인 nodeArr 배열 만들기
+	char* arr = malloc(sizeof(char) * MAX_STACK_SIZE); // 길이가 7인 nodeArr 배열 만들기
 	int top = -1;
 	
 	for (int i = 0; i < num; i++)
@@ -215,21 +217,38 @@ float evalPostfix(char *expr);  // 후위표기식을 받아서 내부에서 계
 		if (expr[i] >= '0' && expr[i] <= '9')
 		{
 			top++;
-			arr[top] = expr[i]; // 포인터를 char형 배열에 넣을 수 있나..? 캐스팅 안해도 됨? 
+			arr[top] = expr[i] - 48; // 포인터를 char형 배열에 넣을 수 있나..? 캐스팅 안해도 됨? 
 		}
 		else 
 		{
-			if (top < 0)
+			if (top < -1)		// ????
 			{
 				return -12345;		// 실패할 경우 리턴값 어떻게? 
 			}
 			
-			int a = arr[top];
-			top--;
 			int b = arr[top];
 			top--;
+			int a = arr[top];
+			top--;
 			
-			int result = a expr[i] b;  // 여기 어떻게???
+			int result;
+			if (expr[i] == '+')
+			{
+				result = a + b;
+			}
+			else if (expr[i] == '-')
+			{
+				result = a - b;
+			}
+			else if (expr[i] == '*')
+			{
+				result = a * b;
+			}
+			else if (expr[i] == '/')
+			{
+				result = a / b;
+			}
+
 			top++;
 			arr[top] = result;
 		}
@@ -237,12 +256,14 @@ float evalPostfix(char *expr);  // 후위표기식을 받아서 내부에서 계
 		
 	if (top == 0)
 	{
-		return atof(arr[top]);
+		return (float)arr[0];
 	}
 	else if (top > 0)
 	{
 		return -12345;
 	}
+
+	free(arr);
 		
 }
 
@@ -254,10 +275,11 @@ void destroyTree( TREE *pTree)
 		_destroy( pTree->root);
 	}
 		
-	free( pTree);
+	free(pTree);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+
 void printTree( TREE *pTree)
 {
 	_infix_print(pTree->root, 0);
