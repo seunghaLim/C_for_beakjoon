@@ -111,15 +111,18 @@ int postfix2tree( char *expr, TREE *pTree)  // _makeNode 얘 호출
 			
 			newN->right = nodeArr[top].right;
 			top--;
-			newN->left = nodeArr[top].right;
-			top--;
 			
-			if (top < -1)
+			if (top <= -1)
 			{
+				free(newN->right);
+				free(newN);
 				free(nodeArr);
 				return 0;
 			}
 
+			newN->left = nodeArr[top].right;
+			top--;
+			
 			top++;
 			nodeArr[top].right = newN;
 			
@@ -256,14 +259,15 @@ float evalPostfix(char *expr)  // 후위표기식을 받아서 내부에서 계�
 		
 	if (top == 0)
 	{
+		free(arr);
 		return (float)arr[0];
 	}
 	else if (top > 0)
 	{
+		free(arr);
 		return -12345;
 	}
 
-	free(arr);
 		
 }
 
@@ -343,3 +347,4 @@ int main( int argc, char **argv)
 	}
 	return 0;
 }
+
