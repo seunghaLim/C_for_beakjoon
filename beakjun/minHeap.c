@@ -57,33 +57,43 @@ int main(){
 
             //flag를 0으로 뒀는데 맥스힙의 경우 큰 문제가 없지만 민힙의 경우 비교할 때 이미 빈 배열인데도 그걸 0값으로 인식할 수 있음 그걸 걸러주는 장치가 필요함
             while ( (minHeap[index] > minHeap[left] && minHeap[left] != 0) || (minHeap[index] > minHeap[right] && minHeap[right] != 0)){
-            
-                if (minHeap[right] <= minHeap[left]){
+                
+                int smallest;
+                int smallest_idx;
 
-                    int temp;
-                    temp = minHeap[index];
-                    minHeap[index] =  minHeap[right];
-                    minHeap[right] = temp;
+                if (minHeap[right] == 0){
 
-                    index = right;
+                    smallest = minHeap[left];
+                    smallest_idx = left;
+                }
+                else {
 
-                    left = index*2 + 1;
-                    right = index*2 + 2;
+                    if (minHeap[left] < minHeap[right]){
+
+                        smallest = minHeap[left];
+                        smallest_idx = left;    
+
+                    }
+                    else if (minHeap[left] >= minHeap[right]){
+                            
+                        smallest = minHeap[right];
+                        smallest_idx = right;
+
+                    }
 
                 }
-                else if (minHeap[right] > minHeap[left]){
 
-                    int temp;
-                    temp = minHeap[index];
-                    minHeap[index] =  minHeap[left];
-                    minHeap[left] = temp;
+                int temp;
+                temp = minHeap[index];
+                minHeap[index] =  minHeap[smallest_idx];
+                minHeap[smallest_idx] = temp;
 
-                    index = left;
-                    left = index*2 + 1;
-                    right = index*2 + 2;
+                index = smallest_idx;
+
+                left = index*2 + 1;
+                right = index*2 + 2;
+                
                 }
-            
-            }
             }
 
         }

@@ -79,7 +79,6 @@ int main(){
             //flag를 0으로 뒀는데 맥스힙의 경우 큰 문제가 없지만 민힙의 경우 비교할 때 이미 빈 배열인데도 그걸 0값으로 인식할 수 있음 그걸 걸러주는 장치가 필요함
             // 음... flag를 0으로 준 것 자체가 잘못된 것 같음ㅅㅂ 코드가 너무 더러워짐
             while ( (abs(Heap[index]) >= abs(Heap[left]) && Heap[left] != 0) || (abs(Heap[index]) >= abs(Heap[right]) && Heap[right] != 0)){
-            
 
                 int smallest;
                 int smallest_idx;
