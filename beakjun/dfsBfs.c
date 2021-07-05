@@ -5,11 +5,11 @@
 #define MAXVERTICES 1001                    // define 뒤에 세미콜론 안붙이나봐;;;;; 당황
 int graph[MAXVERTICES][MAXVERTICES] = { 0, };
 int vertices_flag[MAXVERTICES] = { 0, };    // 모든 flag를 0으로 초기화
-int cap = 0;
+int dsf_flag[MAXVERTICES] = { 0, };
+void DFS(int n, int v);
 
 void BFS(int N, int V);
-void push (int x, int minHeap[], int cap);
-int pop (int minHeap[], int cap); 
+
 
 int main(){
 
@@ -26,14 +26,48 @@ int main(){
 
     }
     
+    DFS(N, V);  // dfs 함수 구현
+    printf("\n");
     BFS(N, V); // BFS 함수 구현
 
 
 }
 
+
+
+void DFS(int n, int v){
+
+    if (dsf_flag[v] == 0){
+
+        printf("%d ", v);
+        dsf_flag[v] = 1;
+    }
+    else
+        return;
+
+    for (int y = 1; y <= n; y++){
+        
+        if (graph[v][y] == 1){
+            
+            DFS(n, y);
+
+        }
+    }
+    
+
+}
+
+
+
+
+
+
+
+
+
 void BFS(int N, int V){
 
-    int queue[100000];     // 큐 만듦 (minheap)  QUEUE *queue = CreateQueue(N); 
+    int queue[MAXVERTICES];     // 큐 만듦 (minheap)  QUEUE *queue = CreateQueue(N); 
     int queue_cap, front, rear;
     queue_cap = 0;
     front = 0;
