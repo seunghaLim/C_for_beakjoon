@@ -58,13 +58,6 @@ void DFS(int n, int v){
 }
 
 
-
-
-
-
-
-
-
 void BFS(int N, int V){
 
     int queue[MAXVERTICES];     // 큐 만듦 (minheap)  QUEUE *queue = CreateQueue(N); 
