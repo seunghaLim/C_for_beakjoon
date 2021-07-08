@@ -6,11 +6,14 @@
 int matrix[MAX][MAX] = {0, };
 int flag[MAX] = {0, };
 
+//최소힙에 넣는 노드 구조체
 typedef struct _NODE{
-    int weight;
-    int next;
+
+    int weight; // 가중치 값
+    int next;   // 이 다음에 가야 할 정점의 정보
 }Node;
 
+//최소힙 구조체
 typedef struct _MINHEAP{
 
     Node *heap;
@@ -31,6 +34,7 @@ int main(){
 
     scanf("%d %d", &v, &e);
 
+    // 행렬에 값 입력받음
     for (int i = 0; i < e; i++){
 
         int a, b, c;
@@ -39,6 +43,7 @@ int main(){
         matrix[b][a] = c;
     } 
 
+    // 최소 힙 생성
     MinHeap *minheap = malloc(sizeof(MinHeap));
     minheap->cap = 1;
     minheap->num = 0;
@@ -56,40 +61,40 @@ int main(){
 
 int print_MST_weight(int v, int e, int start, MinHeap* minheap){
    
-    static int weight = 0; 
-    static int count = 0;
+    static int weight = 0;  // 간선의 가중치 저장할 변수
+    static int count = 0;   // 카운트 변수
     
     flag[start] = 1;
 
-    if (count == v-1){         // 저장한 가중치가 v-1개가 되면 멈춤
+    if (count == v-1){         // 저장한 가중치 개수가 v-1개가 되면 MST 완성됨 -> 멈춤
         
-        return weight;                 // 리턴
+        return weight;                 // 가중치 총합 리턴
     }  
 
     for (int c = 1; c <= v; c++){
     
         if (matrix[start][c] != 0 && flag[c] == 0){
 
-            if (minheap->num == minheap->cap){
+            if (minheap->num == minheap->cap){      // 용량이 부족하면 realloc으로 다시 할당
 
                 ++minheap->cap;
                 minheap->heap = (Node *)realloc( minheap->heap, sizeof(Node));
 
             }
 
-            minheap->heap[minheap->num].next = c;
+            minheap->heap[minheap->num].next = c;       // 힙에 next와 가중치 저장 
             minheap->heap[minheap->num].weight = matrix[start][c];
 
-            push(minheap->heap[minheap->num], minheap); // minheap에 넣음
+            push(minheap->heap[minheap->num], minheap); // 힙에 넣어서 정렬
     
         }
     }
 
-    Node ret = pop(minheap);    // minheap에서 하나 빼고, 가중치 값 저장
-    weight += ret.weight; 
+    Node ret = pop(minheap);    // minheap에서 하나 뺌
+    weight += ret.weight;       // 뺀 값의 가중치 저장
     count++;
     
-    print_MST_weight(v, e, ret.next, minheap); // minheap에서 뺀 걸로 다시 반복
+    print_MST_weight(v, e, ret.next, minheap); // minheap에서 뺀 정점의 다음 정점로 다시 반복
 
 }
        
