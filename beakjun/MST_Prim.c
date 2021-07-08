@@ -39,13 +39,17 @@ int main(){
         matrix[b][a] = c;
     } 
 
-    MinHeap *minheap = malloc(sizeof(minheap));
+    MinHeap *minheap = malloc(sizeof(MinHeap));
     minheap->cap = 1;
     minheap->num = 0;
     minheap->heap = (Node*)malloc(minheap->cap*sizeof(Node));
 
     sum = print_MST_weight(v, e, 1, minheap);
     printf("%d\n", sum);
+
+    free(minheap->heap);                    
+    free(minheap); 
+
 
 }
 
@@ -69,7 +73,7 @@ int print_MST_weight(int v, int e, int start, MinHeap* minheap){
             if (minheap->num == minheap->cap){
 
                 ++minheap->cap;
-                minheap->heap = (Node *)realloc( minheap->heap, minheap->cap*sizeof(Node));
+                minheap->heap = (Node *)realloc( minheap->heap, sizeof(Node));
 
             }
 
@@ -85,10 +89,8 @@ int print_MST_weight(int v, int e, int start, MinHeap* minheap){
     weight += ret.weight; 
     count++;
     
-
     print_MST_weight(v, e, ret.next, minheap); // minheap에서 뺀 걸로 다시 반복
 
-    // for문으로 free해줌
 }
        
     
@@ -121,7 +123,7 @@ Node pop(MinHeap* minheap){
         ret = minheap->heap[0];
         --minheap->num;
         minheap->heap[0] = minheap->heap[minheap->num];      
-        minheap->heap[minheap->num].weight = 0; 
+        minheap->heap[minheap->num].weight = -10000000; 
         // next는 초기화 안해주나?
 
         int index = 0;
@@ -129,8 +131,8 @@ Node pop(MinHeap* minheap){
         int right = 2;
 
         //flag를 0으로 뒀는데 맥스힙의 경우 큰 문제가 없지만 민힙의 경우 비교할 때 이미 빈 배열인데도 그걸 0값으로 인식할 수 있음 그걸 걸러주는 장치가 필요함
-        while ( (minheap->heap[index].weight > minheap->heap[left].weight && minheap->heap[left].weight != 0) || 
-                (minheap->heap[index].weight > minheap->heap[right].weight && minheap->heap[right].weight != 0)){
+        while ( (minheap->heap[index].weight > minheap->heap[left].weight && abs(minheap->heap[left].weight) < 1000000  ) ||   // 절댓값이 1000000보다 크거나 같을 때 
+                (minheap->heap[index].weight > minheap->heap[right].weight && abs(minheap->heap[right].weight) < 1000000 )){
                 
             Node smallest;
             int smallest_idx;
