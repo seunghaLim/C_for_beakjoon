@@ -36,7 +36,7 @@ int main(){
 
 void MergeSort(int A[], int l, int r){
  
-    if(l < r){
+    if(l < r){      // 
 
         MergeSort(A, l, (l+r)/2);       // n값 잘못 설정해줘서 무한루프
         MergeSort(A, (l+r)/2+1, r);
