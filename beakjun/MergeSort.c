@@ -6,7 +6,7 @@
 
 int arr[MAX];
 
-void MergeSort(int A[], int l, int r, int n);
+void MergeSort(int A[], int l, int r);
 void Merge(int A[], int L, int l, int R, int r);
 
 int main(){
@@ -24,7 +24,7 @@ int main(){
     l = 0;
     r = N-1;    //  4
     
-    MergeSort(arr, l, r, N);
+    MergeSort(arr, l, r);
     
     printf("\n");
 
@@ -34,12 +34,12 @@ int main(){
     
 }
 
-void MergeSort(int A[], int l, int r, int n){
+void MergeSort(int A[], int l, int r){
  
-    if(n > 1){
+    if(l < r){
 
-        MergeSort(A, l, (l+r)/2, floor(n/2));       // n값 잘못 설정해줘서 무한루프
-        MergeSort(A, (l+r)/2+1, r, ceil(n/2));
+        MergeSort(A, l, (l+r)/2);       // n값 잘못 설정해줘서 무한루프
+        MergeSort(A, (l+r)/2+1, r);
         Merge(A, l, (l+r)/2+1, (l+r)/2, r);
         
     }
@@ -93,7 +93,7 @@ void Merge(int A[], int L, int l, int R, int r){
     }
 
 
-    free(B);
+    //free(B);
  
 
 }
