@@ -1,5 +1,4 @@
 #include <stdio.h>
-#include <math.h>
 #include <stdlib.h>
 
 #define MAX 1000000
@@ -12,7 +11,9 @@ void Merge(int A[], int L, int l, int R, int r);
 int main(){
         
     int N, l, r;
+
     scanf("%d",&N);
+    
     
 
     for (int i = 0; i < N; i++){
@@ -21,8 +22,9 @@ int main(){
         
     }
 
+
     l = 0;
-    r = N-1;    //  4
+    r = N-1;  
     
     MergeSort(arr, l, r);
     
@@ -36,7 +38,7 @@ int main(){
 
 void MergeSort(int A[], int l, int r){
  
-    if(l < r){      // 
+    if( l < r ){      // 무한루프 제한 기준
 
         MergeSort(A, l, (l+r)/2);       // n값 잘못 설정해줘서 무한루프
         MergeSort(A, (l+r)/2+1, r);
@@ -53,7 +55,7 @@ void Merge(int A[], int L, int l, int R, int r){
     i = L;
     j = l;
     k = L;
-    int* B = malloc(sizeof(int) * r+1);     // 임시 배열 사용
+    int* B = malloc(sizeof(int) * (r+1));     // 임시 배열 사용
 
 
     while( i < (R+1) && j < (r+1) ){
@@ -93,7 +95,7 @@ void Merge(int A[], int L, int l, int R, int r){
     }
 
 
-    //free(B);
+    free(B);
  
 
 }
