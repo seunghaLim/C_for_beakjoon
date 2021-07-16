@@ -49,7 +49,7 @@ int main(){
             }
             
             if (count == n){
-                printf("%d\n", name);
+                printf("%d\n", name);`
                 return 0;
             }
             else {
